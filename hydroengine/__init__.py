@@ -40,9 +40,9 @@ def download_water_mask(region, path):
 
 
 def get_water_mask(region, start='2010-01-01', stop='2015-01-01', scale=10,
-                   crs='EPSG:4326'):
+                   crs='EPSG:4326', use_url=False):
     data = {'region': region, 'start': start, 'stop': stop, 'scale': scale,
-            'crs': crs, 'use_url': False}
+            'crs': crs, 'use_url': use_url}
 
     r = requests.post(SERVER_URL + '/get_water_mask', json=data)
     _check_request(r)
