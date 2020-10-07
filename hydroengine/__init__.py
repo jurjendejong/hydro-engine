@@ -17,8 +17,6 @@ import os.path
 
 # SERVER_URL = 'http://127.0.0.1:8080'
 SERVER_URL = 'http://hydro-engine.appspot.com'
-
-
 # SERVER_URL = 'https://dev3-dot-hydro-engine.appspot.com'
 
 
@@ -28,7 +26,9 @@ def _check_request(r):
         r.raise_for_status()
     except requests.RequestException as e:
         print(e)
-        print(r.text)
+        message = json.loads(r.text)
+        # print(json.dumps(message, indent=4))
+        print(message['error']['stack'])
         raise e
 
 
@@ -40,9 +40,9 @@ def download_water_mask(region, path):
 
 
 def get_water_mask(region, start='2010-01-01', stop='2015-01-01', scale=10,
-                   crs='EPSG:4326', use_url=False):
+                   crs='EPSG:4326', use_url=False, largest_only=True):
     data = {'region': region, 'start': start, 'stop': stop, 'scale': scale,
-            'crs': crs, 'use_url': use_url}
+            'crs': crs, 'use_url': use_url, 'largest_only': largest_only}
 
     r = requests.post(SERVER_URL + '/get_water_mask', json=data)
     _check_request(r)
@@ -50,9 +50,9 @@ def get_water_mask(region, start='2010-01-01', stop='2015-01-01', scale=10,
     return json.loads(r.text)
 
 
-def get_water_network(region, start, stop, scale=10, crs='EPSG:4326'):
+def get_water_network(region, start, stop, scale=10, crs='EPSG:4326', use_url=False):
     data = {'region': region, 'start': start, 'stop': stop, 'scale': scale,
-            'crs': crs, 'use_url': False}
+            'crs': crs, 'use_url': use_url}
 
     r = requests.post(SERVER_URL + '/get_water_network', json=data)
     _check_request(r)
@@ -61,9 +61,9 @@ def get_water_network(region, start, stop, scale=10, crs='EPSG:4326'):
 
 
 def get_water_network_properties(region, start, stop, scale=10,
-                                 crs='EPSG:4326', step=100):
+                                 crs='EPSG:4326', step=100, use_url=False):
     data = {'region': region, 'start': start, 'stop': stop, 'scale': scale,
-            'crs': crs, 'step': step, 'use_url': False}
+            'crs': crs, 'step': step, 'use_url': use_url}
 
     r = requests.post(SERVER_URL + '/get_water_network_properties', json=data)
     _check_request(r)
